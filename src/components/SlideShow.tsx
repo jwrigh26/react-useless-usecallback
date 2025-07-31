@@ -28,7 +28,7 @@ const slides: Slide[] = [
     answer: "YES - Creates new objects every render",
     explanation:
       "Every render creates a new object literal and arrow function, causing MemoizedComponent to re-render even if it's wrapped in React.memo.",
-    isCorrect: false,
+    isCorrect: true,
   },
   {
     id: 2,
@@ -79,6 +79,29 @@ const slides: Slide[] = [
   },
   {
     id: 5,
+    title: "The Spread Trap",
+    code: `function Component({ theme }) {
+  const baseConfig = useMemo(() => ({ 
+    apiUrl: '/api/v1',
+    timeout: 5000 
+  }), [])
+  
+  const config = useMemo(() => ({
+    ...baseConfig,  // 🚨 This creates a new object!
+    theme
+  }), [baseConfig, theme])
+  
+  return <MemoizedChild config={config} />
+}`,
+    question:
+      "Is this useMemo actually preventing unnecessary re-renders?",
+    answer: "NO - Spread operator creates new objects every time",
+    explanation:
+      "Even though baseConfig is stable, spreading it with ...baseConfig creates a brand new object on every render. The useMemo becomes useless because config is always a new reference, causing MemoizedChild to re-render constantly.",
+    isCorrect: false,
+  },
+  {
+    id: 6,
     title: "Complex Props Object",
     code: `function UserProfile({ user }) {
   const profileData = useMemo(() => ({
@@ -96,7 +119,7 @@ const slides: Slide[] = [
     isCorrect: false,
   },
   {
-    id: 6,
+    id: 7,
     title: "Event Handler with Dependencies",
     code: `function SearchBox({ onSearch, placeholder }) {
   const [query, setQuery] = useState('')
@@ -114,7 +137,7 @@ const slides: Slide[] = [
     isCorrect: false,
   },
   {
-    id: 7,
+    id: 8,
     title: "The Right Way",
     code: `const MemoizedExpensiveComponent = React.memo(ExpensiveComponent)
 
@@ -231,12 +254,16 @@ export function SlideShow({ onComplete }: SlideShowProps) {
                 }`}
               >
                 <div className="answer-text">
-                  <strong>Answer:</strong> {slide.answer}
+                  {userAnswers[currentSlide] === slide.isCorrect ? (
+                    <><strong>Correct:</strong> {slide.answer}</>
+                  ) : (
+                    <><strong>Wrong:</strong> {slide.answer}</>
+                  )}
                 </div>
                 {userAnswers[currentSlide] === slide.isCorrect ? (
-                  <div className="result-icon">🎉</div>
+                  <div className="result-icon">😊</div>
                 ) : (
-                  <div className="result-icon">😅</div>
+                  <div className="result-icon">😞</div>
                 )}
               </div>
 

@@ -558,7 +558,28 @@
 }
 
 .result-icon {
-  font-size: 2rem;
+  font-size: 3rem;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.answer-result.correct .result-icon {
+  background: rgba(74, 222, 128, 0.2);
+  border: 2px solid rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+}
+
+.answer-result.incorrect .result-icon {
+  background: rgba(255, 107, 107, 0.2);
+  border: 2px solid rgba(255, 107, 107, 0.4);
+  color: #ff6b6b;
 }
 
 .explanation {

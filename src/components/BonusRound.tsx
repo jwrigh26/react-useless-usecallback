@@ -49,7 +49,7 @@ function Child({ config, onAction, items }) {
     question: "Will MemoizedGrandchild re-render unnecessarily?",
     answer: "YES - The items array is recreated every render",
     explanation: "Even though config and onAction are stable, the items array literal is created fresh on every Parent render. This breaks memoization all the way down the component tree, causing both MemoizedChild AND MemoizedGrandchild to re-render.",
-    isCorrect: false
+    isCorrect: true
   },
   {
     id: 2,
@@ -72,8 +72,8 @@ function Parent({ user, theme }) {
   return <MemoizedComponent config={config} />
 }`,
     question: "Is this memoization working correctly?",
-    answer: "NO - user.id dependency will cause frequent recreations",
-    explanation: "While baseConfig is stable, the config object depends on user.id. If user is an object that gets recreated frequently (common in Redux/Context), user.id will trigger constant re-memoization even if the actual ID value hasn't changed.",
+    answer: "NO - Multiple issues: spread + unstable user.id dependency",
+    explanation: "This has TWO problems: 1) The spread operator (...baseConfig) creates a new object every render, making memoization useless. 2) Even if we fixed the spread, user.id is dangerous because 'user' often comes from Redux/Context as a new object each render. React compares dependencies by reference, so even if user.id has the same VALUE (like 123), if 'user' is a new object, the dependency check fails. Better approach: extract const userId = user.id first, then use userId in dependencies.",
     isCorrect: false
   },
   {
@@ -191,7 +191,7 @@ function Form() {
     question: "Will MemoizedInput re-render unnecessarily?",
     answer: "YES - onChange creates a new function every render",
     explanation: "While the ref is stable, the onChange prop is a new arrow function on every render. Even though MemoizedInput is memoized, it will re-render every time because onChange is always 'different'. The handleSubmit useCallback is also recreating due to the value dependency.",
-    isCorrect: false
+    isCorrect: true
   },
   {
     id: 7,
@@ -262,7 +262,7 @@ function Parent({ data }) {
 }`,
     question: "Will the HOC memoization prevent unnecessary re-renders?",
     answer: "NO - Object spread in processedData breaks memoization",
-    explanation: "The HOC correctly memoizes the wrapper, but processedData creates new objects ({ ...item, processed: true }) for every item on every render. Even if data array is the same, the items inside are 'new' objects, making processedData 'different' and breaking memoization.",
+    explanation: "The HOC correctly memoizes the wrapper, but processedData creates new objects ({ ...item, processed: true }) for every item on every render. Even if data array is the same, the items inside are 'new' objects, making processedData 'different' and breaking memoization. BONUS CASCADE EFFECT: Even if we fixed the spread, this could still break if the 'data' prop from Parent's parent isn't stable. Memoization is only as strong as its weakest link - unstable props anywhere up the component tree will cascade down and break all downstream memoization efforts.",
     isCorrect: false
   }
 ];
@@ -390,12 +390,16 @@ export function BonusRound({ onComplete }: BonusRoundProps) {
                 userAnswers[currentSlide] === slide.isCorrect ? 'correct' : 'incorrect'
               }`}>
                 <div className="answer-text">
-                  <strong>Answer:</strong> {slide.answer}
+                  {userAnswers[currentSlide] === slide.isCorrect ? (
+                    <><strong>Correct:</strong> {slide.answer}</>
+                  ) : (
+                    <><strong>Wrong:</strong> {slide.answer}</>
+                  )}
                 </div>
                 {userAnswers[currentSlide] === slide.isCorrect ? (
-                  <div className="result-icon">🎉</div>
+                  <div className="result-icon">😊</div>
                 ) : (
-                  <div className="result-icon">😅</div>
+                  <div className="result-icon">😞</div>
                 )}
               </div>
               
