@@ -1,79 +1,108 @@
 import { useState } from "react";
 import "./App.css";
-import { ApiDebounceExample } from "./components/ApiDebounceExample";
-import { BasicDebounceExample } from "./components/BasicDebounceExample";
-import { ComparisonExample } from "./components/ComparisonExample";
-import { FormDebounceExample } from "./components/FormDebounceExample";
+import { DebounceExamples } from "./components/DebounceExamples";
+import { SlideShow } from "./components/SlideShow";
+import { BonusRound } from "./components/BonusRound";
 
-type Section = "basic" | "form" | "api" | "comparison";
+type MainSection = "quiz" | "bonus" | "examples";
 
 function App() {
-  const [activeSection, setActiveSection] = useState<Section>("basic");
+  const [activeSection, setActiveSection] = useState<MainSection>("quiz");
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [bonusCompleted, setBonusCompleted] = useState(false);
 
-  const sections = [
-    {
-      id: "basic" as const,
-      title: "🔍 Basic Search",
-      description: "Simple search with broken debounce",
-    },
-    {
-      id: "form" as const,
-      title: "📝 Form Validation",
-      description: "Form validation with cascading re-renders",
-    },
-    {
-      id: "api" as const,
-      title: "🌐 API Calls",
-      description: "API debouncing gone wrong",
-    },
-    {
-      id: "comparison" as const,
-      title: "⚖️ Side-by-Side",
-      description: "Broken vs Fixed comparison",
-    },
-  ];
+  const handleQuizComplete = () => {
+    setQuizCompleted(true);
+    // Optionally auto-navigate to examples after completing quiz
+    // setActiveSection("examples");
+  };
+
+  const handleBonusComplete = () => {
+    setBonusCompleted(true);
+  };
 
   return (
     <div className="app-container">
       <header className="app-header">
         <h1>🚫 The Useless useCallback</h1>
         <p>
-          Interactive examples of common memoization anti-patterns and their
-          fixes
+          Learn when memoization helps, when it hurts, and when it's completely
+          pointless
         </p>
       </header>
 
-      <nav className="app-nav">
-        {sections.map((section) => (
-          <button
-            key={section.id}
-            className={`nav-button ${
-              activeSection === section.id ? "active" : ""
-            }`}
-            onClick={() => setActiveSection(section.id)}
-          >
-            <div className="nav-button-title">{section.title}</div>
-            <div className="nav-button-desc">{section.description}</div>
-          </button>
-        ))}
+      <nav className="main-nav">
+        <button
+          className={`main-nav-button ${
+            activeSection === "quiz" ? "active" : ""
+          }`}
+          onClick={() => setActiveSection("quiz")}
+        >
+          <div className="main-nav-icon">🎯</div>
+          <div className="main-nav-content">
+            <div className="main-nav-title">Interactive Quiz</div>
+            <div className="main-nav-desc">
+              Test your memoization knowledge with real code examples
+            </div>
+            {quizCompleted && (
+              <div className="completion-badge">✅ Completed</div>
+            )}
+          </div>
+        </button>
+
+        <button
+          className={`main-nav-button ${
+            activeSection === "examples" ? "active" : ""
+          }`}
+          onClick={() => setActiveSection("examples")}
+        >
+          <div className="main-nav-icon">🔍</div>
+          <div className="main-nav-content">
+            <div className="main-nav-title">Real World Examples</div>
+            <div className="main-nav-desc">
+              Interactive demos showing useless useCallback in practice
+            </div>
+          </div>
+        </button>
+
+        <button
+          className={`main-nav-button ${
+            activeSection === "bonus" ? "active" : ""
+          }`}
+          onClick={() => setActiveSection("bonus")}
+        >
+          <div className="main-nav-icon">👹</div>
+          <div className="main-nav-content">
+            <div className="main-nav-title">Bonus Round</div>
+            <div className="main-nav-desc">
+              Advanced traps and edge cases that will stump you
+            </div>
+            {bonusCompleted && (
+              <div className="completion-badge">🏆 Completed</div>
+            )}
+          </div>
+        </button>
       </nav>
 
       <main className="app-main">
-        {activeSection === "basic" && <BasicDebounceExample />}
-        {activeSection === "form" && <FormDebounceExample />}
-        {activeSection === "api" && <ApiDebounceExample />}
-        {activeSection === "comparison" && <ComparisonExample />}
+        {activeSection === "quiz" && (
+          <SlideShow onComplete={handleQuizComplete} />
+        )}
+        {activeSection === "bonus" && (
+          <BonusRound onComplete={handleBonusComplete} />
+        )}
+        {activeSection === "examples" && <DebounceExamples />}
       </main>
 
       <footer className="app-footer">
         <p>
           Learn more:{" "}
           <a
-            href="https://tkdodo.eu/blog/a-memo-on-react-memo"
+            href="https://tkdodo.eu/blog/the-useless-use-callback"
             target="_blank"
             rel="noopener noreferrer"
           >
-            "A (memo) on React.memo" by TkDodo
+            "The Useless useCallback" by TkDodo
           </a>
         </p>
       </footer>
