@@ -93,8 +93,7 @@ const slides: Slide[] = [
   
   return <MemoizedChild config={config} />
 }`,
-    question:
-      "Is this useMemo actually preventing unnecessary re-renders?",
+    question: "Is this useMemo actually preventing unnecessary re-renders?",
     answer: "NO - Spread operator creates new objects every time",
     explanation:
       "Even though baseConfig is stable, spreading it with ...baseConfig creates a brand new object on every render. The useMemo becomes useless because config is always a new reference, causing MemoizedChild to re-render constantly.",
@@ -255,9 +254,13 @@ export function SlideShow({ onComplete }: SlideShowProps) {
               >
                 <div className="answer-text">
                   {userAnswers[currentSlide] === slide.isCorrect ? (
-                    <><strong>Correct:</strong> {slide.answer}</>
+                    <>
+                      <strong>Correct:</strong> {slide.answer}
+                    </>
                   ) : (
-                    <><strong>Wrong:</strong> {slide.answer}</>
+                    <>
+                      <strong>Wrong:</strong> {slide.answer}
+                    </>
                   )}
                 </div>
                 {userAnswers[currentSlide] === slide.isCorrect ? (

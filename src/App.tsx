@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./App.css";
+import { BonusRound } from "./components/BonusRound";
 import { DebounceExamples } from "./components/DebounceExamples";
 import { SlideShow } from "./components/SlideShow";
-import { BonusRound } from "./components/BonusRound";
 
 type MainSection = "quiz" | "bonus" | "examples";
 
