@@ -25,14 +25,10 @@ const MOCK_DATA = [
 
 interface SearchDemoProps {
   title: string;
-  useDebounceHook: (
-    callback: (query: string) => void,
-    delay: number
-  ) => (query: string) => void;
   version: "broken" | "fixed";
 }
 
-function SearchDemo({ title, useDebounceHook, version }: SearchDemoProps) {
+function SearchDemo({ title, version }: SearchDemoProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<string[]>([]);
   const renderCount = useRenderCounter(`SearchDemo-${version}`);
@@ -50,7 +46,12 @@ function SearchDemo({ title, useDebounceHook, version }: SearchDemoProps) {
     setResults(filtered);
   };
 
-  const debouncedSearch = useDebounceHook(searchFunction, 300);
+  // Always call both hooks to avoid violating Rules of Hooks
+  const debouncedSearchBroken = useDebounceBroken(searchFunction, 300);
+  const debouncedSearchFixed = useDebounce(searchFunction, 300);
+  
+  // Select which one to use based on version
+  const debouncedSearch = version === "broken" ? debouncedSearchBroken : debouncedSearchFixed;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -242,9 +243,6 @@ export function useDebounce<T extends AnyFunction>(
             activeTab === "broken"
               ? "❌ Broken: useDebounceBroken"
               : "✅ Fixed: useDebounce"
-          }
-          useDebounceHook={
-            activeTab === "broken" ? useDebounceBroken : useDebounce
           }
           version={activeTab}
         />

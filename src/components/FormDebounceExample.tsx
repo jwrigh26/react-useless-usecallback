@@ -52,14 +52,10 @@ const validateField = (
 
 interface FormDemoProps {
   title: string;
-  useDebounceHook: (
-    callback: (field: string, value: string) => void,
-    delay: number
-  ) => (field: string, value: string) => void;
   version: "broken" | "fixed";
 }
 
-function FormDemo({ title, useDebounceHook, version }: FormDemoProps) {
+function FormDemo({ title, version }: FormDemoProps) {
   const [formData, setFormData] = useState<FormData>({
     username: "",
     email: "",
@@ -85,7 +81,12 @@ function FormDemo({ title, useDebounceHook, version }: FormDemoProps) {
     }
   };
 
-  const debouncedValidate = useDebounceHook(validateFieldAsync, 500);
+  // Always call both hooks to avoid Rules of Hooks violations
+  const debouncedValidateBroken = useDebounceBroken(validateFieldAsync, 500);
+  const debouncedValidateFixed = useDebounce(validateFieldAsync, 500);
+  
+  // Select which debounced function to use based on version
+  const debouncedValidate = version === "broken" ? debouncedValidateBroken : debouncedValidateFixed;
 
   const handleInputChange =
     (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -356,9 +357,6 @@ export function FormDebounceExample() {
             activeTab === "broken"
               ? "❌ Broken: Inconsistent Debouncing"
               : "✅ Fixed: Stable Debouncing"
-          }
-          useDebounceHook={
-            activeTab === "broken" ? useDebounceBroken : useDebounce
           }
           version={activeTab}
         />

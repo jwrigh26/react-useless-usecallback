@@ -62,14 +62,10 @@ const mockSearchAPI = (query: string): Promise<SearchResult[]> => {
 
 interface ApiDemoProps {
   title: string;
-  useDebounceHook: (
-    callback: (query: string) => void,
-    delay: number
-  ) => (query: string) => void;
   version: "broken" | "fixed";
 }
 
-function ApiDemo({ title, useDebounceHook, version }: ApiDemoProps) {
+function ApiDemo({ title, version }: ApiDemoProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -100,7 +96,12 @@ function ApiDemo({ title, useDebounceHook, version }: ApiDemoProps) {
     }
   };
 
-  const debouncedSearch = useDebounceHook(performSearch, 500);
+  // Always call both hooks to avoid Rules of Hooks violations
+  const debouncedSearchBroken = useDebounceBroken(performSearch, 500);
+  const debouncedSearchFixed = useDebounce(performSearch, 500);
+  
+  // Select which debounced function to use based on version
+  const debouncedSearch = version === "broken" ? debouncedSearchBroken : debouncedSearchFixed;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -367,9 +368,6 @@ export function ApiDebounceExample() {
             activeTab === "broken"
               ? "❌ Broken: Excessive API Requests"
               : "✅ Fixed: Optimized API Calls"
-          }
-          useDebounceHook={
-            activeTab === "broken" ? useDebounceBroken : useDebounce
           }
           version={activeTab}
         />

@@ -24,18 +24,10 @@ const SAMPLE_DATA = [
 
 interface SideBySideDemoProps {
   title: string;
-  useDebounceHook: (
-    callback: (query: string) => void,
-    delay: number
-  ) => (query: string) => void;
   version: "broken" | "fixed";
 }
 
-function SideBySideDemo({
-  title,
-  useDebounceHook,
-  version,
-}: SideBySideDemoProps) {
+function SideBySideDemo({ title, version }: SideBySideDemoProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<string[]>([]);
   const [searchCount, setSearchCount] = useState(0);
@@ -56,7 +48,12 @@ function SideBySideDemo({
     setResults(filtered);
   };
 
-  const debouncedSearch = useDebounceHook(performSearch, 300);
+  // Always call both hooks to avoid Rules of Hooks violations
+  const debouncedSearchBroken = useDebounceBroken(performSearch, 300);
+  const debouncedSearchFixed = useDebounce(performSearch, 300);
+  
+  // Select which debounced function to use based on version
+  const debouncedSearch = version === "broken" ? debouncedSearchBroken : debouncedSearchFixed;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -342,13 +339,11 @@ function SearchComponent() {
       >
         <SideBySideDemo
           title="❌ Broken useDebounce"
-          useDebounceHook={useDebounceBroken}
           version="broken"
         />
 
         <SideBySideDemo
           title="✅ Fixed useDebounce"
-          useDebounceHook={useDebounce}
           version="fixed"
         />
       </div>
