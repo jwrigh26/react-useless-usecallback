@@ -84,9 +84,10 @@ function FormDemo({ title, version }: FormDemoProps) {
   // Always call both hooks to avoid Rules of Hooks violations
   const debouncedValidateBroken = useDebounceBroken(validateFieldAsync, 500);
   const debouncedValidateFixed = useDebounce(validateFieldAsync, 500);
-  
+
   // Select which debounced function to use based on version
-  const debouncedValidate = version === "broken" ? debouncedValidateBroken : debouncedValidateFixed;
+  const debouncedValidate =
+    version === "broken" ? debouncedValidateBroken : debouncedValidateFixed;
 
   const handleInputChange =
     (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -14,6 +14,9 @@
 .app-header h1 {
   font-size: 3rem;
   margin-bottom: 0.5rem;
+}
+
+.gradient-text {
   background: linear-gradient(135deg, #646cff, #ff6b6b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -409,10 +412,7 @@
 }
 
 .bonus-round .slideshow-header h2 {
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  margin: 0;
 }
 
 .slide-counter {

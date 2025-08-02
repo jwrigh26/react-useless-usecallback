@@ -351,7 +351,12 @@ export function BonusRound({ onComplete }: BonusRoundProps) {
   return (
     <div className="slideshow-container bonus-round">
       <div className="slideshow-header">
-        <h2>🎯 Bonus Round - Advanced Memoization Traps</h2>
+        <h2>
+          🎯{" "}
+          <span className="gradient-text">
+            Bonus Round - Advanced Memoization Traps
+          </span>
+        </h2>
         <div className="slide-counter">
           Challenge {currentSlide + 1} of {bonusSlides.length}
         </div>

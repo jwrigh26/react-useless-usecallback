@@ -51,9 +51,10 @@ function SideBySideDemo({ title, version }: SideBySideDemoProps) {
   // Always call both hooks to avoid Rules of Hooks violations
   const debouncedSearchBroken = useDebounceBroken(performSearch, 300);
   const debouncedSearchFixed = useDebounce(performSearch, 300);
-  
+
   // Select which debounced function to use based on version
-  const debouncedSearch = version === "broken" ? debouncedSearchBroken : debouncedSearchFixed;
+  const debouncedSearch =
+    version === "broken" ? debouncedSearchBroken : debouncedSearchFixed;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -337,15 +338,9 @@ function SearchComponent() {
           marginBottom: "2rem",
         }}
       >
-        <SideBySideDemo
-          title="❌ Broken useDebounce"
-          version="broken"
-        />
+        <SideBySideDemo title="❌ Broken useDebounce" version="broken" />
 
-        <SideBySideDemo
-          title="✅ Fixed useDebounce"
-          version="fixed"
-        />
+        <SideBySideDemo title="✅ Fixed useDebounce" version="fixed" />
       </div>
 
       <div

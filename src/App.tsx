@@ -24,7 +24,9 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>🚫 The Useless useCallback</h1>
+        <h1>
+          🚫 <span className="gradient-text">The Useless useCallback</span>
+        </h1>
         <p>
           Learn when memoization helps, when it hurts, and when it's completely
           pointless

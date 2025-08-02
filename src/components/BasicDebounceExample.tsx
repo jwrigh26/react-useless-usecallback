@@ -49,9 +49,10 @@ function SearchDemo({ title, version }: SearchDemoProps) {
   // Always call both hooks to avoid violating Rules of Hooks
   const debouncedSearchBroken = useDebounceBroken(searchFunction, 300);
   const debouncedSearchFixed = useDebounce(searchFunction, 300);
-  
+
   // Select which one to use based on version
-  const debouncedSearch = version === "broken" ? debouncedSearchBroken : debouncedSearchFixed;
+  const debouncedSearch =
+    version === "broken" ? debouncedSearchBroken : debouncedSearchFixed;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

@@ -207,7 +207,9 @@ export function SlideShow({ onComplete }: SlideShowProps) {
   return (
     <div className="slideshow-container">
       <div className="slideshow-header">
-        <h2>🎯 Memoization Quiz</h2>
+        <h2>
+          🎯 <span className="gradient-text">Memoization Quiz</span>
+        </h2>
         <div className="slide-counter">
           Slide {currentSlide + 1} of {slides.length}
         </div>

@@ -99,9 +99,10 @@ function ApiDemo({ title, version }: ApiDemoProps) {
   // Always call both hooks to avoid Rules of Hooks violations
   const debouncedSearchBroken = useDebounceBroken(performSearch, 500);
   const debouncedSearchFixed = useDebounce(performSearch, 500);
-  
+
   // Select which debounced function to use based on version
-  const debouncedSearch = version === "broken" ? debouncedSearchBroken : debouncedSearchFixed;
+  const debouncedSearch =
+    version === "broken" ? debouncedSearchBroken : debouncedSearchFixed;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
